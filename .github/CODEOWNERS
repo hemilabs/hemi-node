@@ -1,0 +1,7 @@
+# This file exists to designate certain reviewers for certain areas of the
+# repository. This allows us to enhance security measures, streamline reviews
+# and help automate review requests.
+
+# This is the default owner for all files in this repository.
+# The Hemi Labs Protocol Engineering team is responsible for all files in this repository.
+* @hemilabs/dev
