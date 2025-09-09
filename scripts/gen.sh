@@ -19,7 +19,6 @@
 # Requirements:
 #   - git
 #   - jq
-#   - dd, od, tr (standard POSIX tools, usually preinstalled)
 #
 # This script generates:
 #   - secrets (jwt.hex, cookie, op-node-priv-key.txt) in the network folder
