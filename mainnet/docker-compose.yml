@@ -40,8 +40,8 @@ services:
   # Bitcoin Finality Governor PostgreSQL
   bfgd-postgres:
     build:
-      context: ./..
-      dockerfile: "../docker/bfgd-postgres.Dockerfile"
+      context: "../docker/bfgd-postgres"
+      dockerfile: "Dockerfile"
     profiles: ["hemi", "full"]
     volumes:
       - psql_data:/var/lib/postgresql/data
