@@ -214,11 +214,6 @@ print_success() {
 	log "2. Start your node:"
 	log "	  cd $NET"
 	log "	  docker compose --profile $PROFILE up --build -d"
-	log
-	log "Useful commands:"
-	log "	docker ps               # View containers"
-	log "	docker compose logs -f  # View logs"
-	log "	docker compose down     # Shutdown containers"
 }
 
 run() {
