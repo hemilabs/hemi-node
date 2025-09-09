@@ -40,8 +40,8 @@ services:
   # Bitcoin Finality Governor PostgreSQL
   bfgd-postgres:
     build:
-      dockerfile: "./localnode/postgres.Dockerfile"
-      context: "./.."
+      context: ./..
+      dockerfile: "../docker/bfgd-postgres.Dockerfile"
     profiles: ["hemi", "full"]
     volumes:
       - psql_data:/var/lib/postgresql/data
@@ -94,7 +94,7 @@ services:
   electrs:
     build:
       context: ./..
-      dockerfile: ./localnode/electrs.Dockerfile
+      dockerfile: ./docker/electrs.Dockerfile
     profiles: ["hemi", "full"]
     volumes:
       - ./cookie:/tmp/.cookie
