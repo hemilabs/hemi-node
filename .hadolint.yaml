@@ -1,0 +1,5 @@
+failure-threshold: warning
+trustedRegistries: ["docker.io", "ghcr.io"]
+ignored:
+  - DL3008 # require pinning apt-get packages
+  - DL3018 # require pinning apk packages
