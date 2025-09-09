@@ -3,6 +3,13 @@ entrypointl2.sh
 mainnet-entrypointl2.sh
 .env
 
+## Secret files
+cookie
+jwt.hex
+op-node-priv-key.txt
+mainnet/entrypoint.sh
+testnet/entrypoint.sh
+
 ### Common editors
 ## Vim
 # Swap
