@@ -118,6 +118,13 @@ gen_env() {
 		exists=true
 	fi
 
+	# Sync mode
+	OP_SYNC_MODE="execution-layer" # snap
+	if [ "$SYNC_MODE" = "archive" ]; then
+		OP_SYNC_MODE="consensus-layer"
+	fi
+
+	# Set variables
 	set_env_var "NET" "$NET" "$ENV_FILE"
 	set_env_var "PROFILE" "$PROFILE" "$ENV_FILE"
 	set_env_var "OPSYNCMODE" "$OP_SYNC_MODE" "$ENV_FILE"
@@ -157,7 +164,7 @@ fi
 
 echo "Running Hemi Node version=$TAG commit=$COMMIT state=$STATE"
 echo " - Network: $NET_ID (tbc: $TBC_NET)"
-echo " - Sync mode: $SYNC_MODE ($OP_SYNC_MODE)"
+echo " - Sync mode: $SYNC_MODE"
 geth \\
 	--config=/tmp/l2-config.toml \\
 	--http \\
@@ -172,7 +179,7 @@ geth \\
 	--ws.port=28546 \\
 	--ws.origins=* \\
 	--ws.api=eth,txpool,net \\
-	--syncmode=$OP_SYNC_MODE \\
+	--syncmode=$SYNC_MODE \\
 	--gcmode=archive \\
 	--maxpeers=100 \\
 	--networkid=$NET_ID \\
@@ -233,12 +240,6 @@ run() {
 	NET_CONFIG="$NET_DIR/config.json"
 	ENV_FILE="$NET_DIR/.env"
 	ENTRYPOINT_FILE="$NET_DIR/entrypoint.sh"
-
-	# Sync mode
-	OP_SYNC_MODE="execution-layer" # snap
-	if [ "$SYNC_MODE" = "archive" ]; then
-		OP_SYNC_MODE="consensus-layer"
-	fi
 
 	deps="git jq"
 	for dep in $deps; do
