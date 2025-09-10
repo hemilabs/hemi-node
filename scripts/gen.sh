@@ -214,6 +214,9 @@ print_success() {
 	log "2. Start your node:"
 	log "	  cd $NET"
 	log "	  docker compose --profile $PROFILE up --build -d"
+	log
+	log "3. Monitor your node:"
+	log "	  ./heminode.sh"
 }
 
 run() {
