@@ -19,6 +19,7 @@
 # Requirements:
 #   - git
 #   - jq
+#   - tmux
 #
 # This script generates:
 #   - secrets (jwt.hex, cookie, op-node-priv-key.txt) in the network folder
@@ -207,13 +208,13 @@ print_success() {
 	log
 	log "Next steps:"
 	log "1. Configure your Ethereum RPC providers:"
+	log "NOTE: This is only needed for the hemi and hemi-min profiles."
 	log "   - Edit $NET/.env and add:"
 	log "	    GETHL1ENDPOINT=<your Ethereum RPC URL>"
 	log "	    PRYSMENDPOINT=<your Prysm RPC URL>"
 	log
 	log "2. Start your node:"
-	log "	  cd $NET"
-	log "	  docker compose --profile $PROFILE up --build -d"
+	log "	  docker compose -f $NET/docker-compose.yml --profile $PROFILE up --build -d"
 	log
 	log "3. Monitor your node:"
 	log "	  ./heminode.sh"
