@@ -208,7 +208,7 @@ print_success() {
 	log
 	log "Next steps:"
 	log "1. Configure your Ethereum RPC providers:"
-	log "NOTE: This is only needed for the hemi and hemi-min profiles."
+	log "   NOTE: This is only needed for the hemi and hemi-min profiles."
 	log "   - Edit $NET/.env and add:"
 	log "	    GETHL1ENDPOINT=<your Ethereum RPC URL>"
 	log "	    PRYSMENDPOINT=<your Prysm RPC URL>"
