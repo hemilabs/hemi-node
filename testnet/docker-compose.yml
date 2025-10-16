@@ -203,7 +203,7 @@ services:
   # Init container for Hemi L2 node
   op-geth-l2-init:
     image: alpine:3.22.1@sha256:4bcff63911fcb4448bd4fdacec207030997caf25e9bea4045fa6c8c44de311d1
-    profiles: ["hemi", "hemi-min", "full"]
+    profiles: ["hemi", "hemi-min", "full", "hemitrap"]
     volumes:
       - op-geth_data:/tmp/datadir
     command:
@@ -215,7 +215,7 @@ services:
   # Init TBC container for Hemi L2 node
   op-geth-l2-init-tbc:
     image: alpine:3.22.1@sha256:4bcff63911fcb4448bd4fdacec207030997caf25e9bea4045fa6c8c44de311d1
-    profiles: ["hemi", "hemi-min", "full"]
+    profiles: ["hemi", "hemi-min", "full", "hemitrap"]
     volumes:
       - tbc_data:/tbcdata
     command:
@@ -300,6 +300,192 @@ services:
       - "--enable-debug-rpc-endpoints"
       - "--grpc-gateway-host=0.0.0.0"
       - "--enable-experimental-backfill"
+
+  geth-l1-forked:
+    image: ghcr.io/foundry-rs/foundry:v1.4.1@sha256:629bebb49d1ba44a52a9fc14229dd58930e3193b4b206ae43ad00089e9ead95b
+    profiles:
+      - hemitrap
+    environment:
+      ANVIL_IP_ADDR: '0.0.0.0'
+    ports:
+      - 9988:9988
+    networks:
+      - "localnode"
+    entrypoint:
+      - anvil
+    command:
+      - --block-time
+      - '12'
+      - --fork-url
+      - ${GETHL1ENDPOINT}
+      - --fork-chain-id
+      - '11155111'
+      - --fork-block-number
+      - '-1' # latest
+      - --port
+      - '9988'
+
+  op-node-forked:
+    # yamllint disable-line rule:line-length
+    image: "ghcr.io/hemilabs/op-node:9cc3af2@sha256:ce6ee92b90d28656c93ffb58f3bdb9d5436015e91ecf587bb5ae2832a1be5e2a"
+    profiles: ["hemitrap"]
+    environment:
+      OP_NODE_BSS_WS: "http://bssd:8081/v1/ws"
+    ports:
+      - '8547:8547'
+    platform: linux/amd64
+    networks:
+      - "localnode"
+    command:
+      - "op-node"
+      - "--ignore-missing-pectra-blob-schedule"
+      - "--l1=http://geth-l1-forked:9988"
+      - "--l1.rpckind=basic"
+      - "--l1.beacon=${PRYSMENDPOINT}"
+      - "--l1.epoch-poll-interval=12s"
+      - "--l2=ws://op-geth-l2-forked:8551"
+      - "--l2.jwt-secret=/tmp/jwt/jwt.hex"
+      - "--sequencer.enabled=true"
+      - "--sequencer.stopped=false"
+      - "--rollup.config=/tmp/rollup.json"
+      - "--override.ecotone=1715865630"
+      - "--override.canyon=1715865630"
+      - "--override.delta=1715865630"
+      - "--rpc.addr=0.0.0.0"
+      - "--rpc.port=8547"
+      - "--p2p.disable"
+      - "--p2p.priv.path=/tmp/op-node-priv-key.txt"
+      - "--p2p.sequencer.key=5de4111afa1a4b94908f83103eb1f1706367c2e68ca870fc3fb9a804cdab365a"
+      - "--log.level=info"
+      - "--override.pectrablobschedule=1748963425"
+      - "--override.isthmus=1748963425"
+      - "--override.holocene=1748963425"
+      - "--override.granite=1748963425"
+      - "--override.fjord=1748963425"
+      - "--l1.trustrpc=true"
+      - "--hemitrap.enabled"
+    depends_on:
+      op-geth-l2-forked:
+        condition: "service_healthy"
+    volumes:
+      # change this token value if you expose this service's ports for
+      # connection from other machines
+      - ./jwt.hex:/tmp/jwt/jwt.hex
+      - ./op-node-priv-key.txt:/tmp/op-node-priv-key.txt
+      - ./rollup.json:/tmp/rollup.json
+    deploy:
+      restart_policy:
+        condition: "any"
+
+  op-batcher-forked:
+    image: "ghcr.io/hemilabs/op-node:9cc3af2@sha256:ce6ee92b90d28656c93ffb58f3bdb9d5436015e91ecf587bb5ae2832a1be5e2a"
+    profiles: ["hemitrap"]
+    networks:
+      - "localnode"
+    command:
+      - "bin/op-batcher"
+      - "--l2-eth-rpc=http://op-geth-l2-forked:18546"
+      - "--rollup-rpc=http://op-node-forked:8547"
+      - "--poll-interval=1s"
+      - "--sub-safety-margin=1"
+      - "--num-confirmations=1"
+      - "--safe-abort-nonce-too-low-count=1"
+      - "--resubmission-timeout=15s"
+      - "--rpc.addr=0.0.0.0"
+      - "--rpc.port=8548"
+      - "--rpc.enable-admin"
+      - "--max-channel-duration=5"
+      - "--max-pending-tx=1"
+      - "--l1-eth-rpc=http://geth-l1-forked:9988"
+      - "--private-key=59c6995e998f97a5a0044966f0945389dc9e86dae88c7a8412f4603b6b78690d"
+      - "--throttle-threshold=0"
+    deploy:
+      restart_policy:
+        condition: "any"
+    healthcheck:
+      start_period: 180s
+    depends_on:
+      geth-l1-forked:
+        condition: "service_started"
+      op-geth-l2-forked:
+        condition: "service_healthy"
+      op-node-forked:
+        condition: "service_started"
+
+  op-proposer-forked:
+    image: "ghcr.io/hemilabs/op-node:9cc3af2@sha256:ce6ee92b90d28656c93ffb58f3bdb9d5436015e91ecf587bb5ae2832a1be5e2a"
+    profiles: ["hemitrap"]
+    networks:
+      - "localnode"
+    command:
+      - bin/op-proposer
+      - --poll-interval=1s
+      - --rpc.port=8560
+      - --private-key=ac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80
+      - --l1-eth-rpc=http://geth-l1-forked:9988
+      - --rollup-rpc=http://op-node-forked:8547
+      - --resubmission-timeout=15s
+      - --safe-abort-nonce-too-low-count=1
+      - --txmgr.not-in-mempool-timeout=3s
+      - --allow-non-finalized=true
+      - --l2oo-address=0x032d1e1dd960a4b027a9a35ff8b2b672e333bc27
+    deploy:
+      restart_policy:
+        condition: "any"
+    depends_on:
+      geth-l1-forked:
+        condition: "service_started"
+      op-geth-l2-forked:
+        condition: "service_healthy"
+      op-node-forked:
+        condition: "service_started"
+    healthcheck:
+      start_period: 180s
+
+  op-geth-l2-forked:
+    # yamllint disable-line rule:line-length
+    image: "ghcr.io/hemilabs/op-geth:e79d992@sha256:dbe292e013345a8a41c9dc8ee09088853410b17c06ef779258d251f55356c501"
+    profiles: ["hemitrap"]
+    environment:
+      OP_GETH_L1_RPC: http://geth-l1-forked:9988"
+      OP_GETH_L2_READINESS_RPC: "http://localhost:18546"
+      GETH_MAXPEERS: 0
+    ports:
+      - '18546:18546'
+      - '28546:28546'
+    networks:
+      - "localnode"
+    entrypoint:
+      - "sh"
+      - "/tmp/entrypointl2.sh"
+    platform: linux/amd64
+    # XXX does geth need to be fully synced
+    depends_on:
+      op-geth-l2-init:
+        condition: "service_completed_successfully"
+      op-geth-l2-init-tbc:
+        condition: "service_completed_successfully"
+    healthcheck:
+      test: ["CMD", "nc", "-vz", "0.0.0.0", "18546"]
+      interval: 5s
+      timeout: 5s
+      retries: 999999
+    volumes:
+      - ./testnet-genesis.json:/tmp/testnet-genesis.json
+      # change this token value if you expose this service's ports for
+      # connection from other machines
+      - ./jwt.hex:/tmp/jwt/jwt.hex:ro
+      - ./entrypointl2.sh:/tmp/entrypointl2.sh
+      - op-geth_data:/tmp/datadir
+      - ./rollup.json:/tmp/rollup.json
+      - tbc_data:/tbcdata
+      - ./l2-config.toml:/tmp/l2-config.toml
+    working_dir: "/tmp"
+    ulimits:
+      memlock: -1
+    deploy:
+      restart_policy:
+        condition: "on-failure"
 
 networks:
   localnode: {}

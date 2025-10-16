@@ -286,6 +286,17 @@ requiring a 1:1 ratio of Hemi to supporting L1 daemon nodes.
 
 ![Depiction of L1 Profile](images/hemi-network-docker-profile-l1-v2.svg)
 
+#### Docker Profile: Hemitrap
+
+This profile is used to test forks of production Hemi networks.  This profile
+will take the existing data directories and start its own "forked" network
+with a new sequencer.
+
+Steps to use this profile are:
+* run a profile that can get you a synced Hemi node. `hemi-min` is fine for this
+* stop the daemons once synced
+* start the docker compose file up with the `hemitrap` profile
+
 ### ⚠️ Important Note on Security
 
 > [!CAUTION]
