@@ -341,7 +341,7 @@ services:
       - "--ignore-missing-pectra-blob-schedule"
       - "--l1=http://geth-l1-forked:9988"
       - "--l1.rpckind=basic"
-      - "--l1.beacon={$PRYSMENDPOINT}"
+      - "--l1.beacon=${PRYSMENDPOINT}"
       - "--l1.epoch-poll-interval=12s"
       - "--l2=ws://op-geth-l2-forked:8551"
       - "--l2.jwt-secret=/tmp/jwt/jwt.hex"
