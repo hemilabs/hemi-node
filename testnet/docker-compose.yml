@@ -457,7 +457,7 @@ services:
       - "localnode"
     entrypoint:
       - "sh"
-      - "/tmp/entrypointl2.sh"
+      - "/tmp/entrypoint.sh"
     platform: linux/amd64
     # XXX does geth need to be fully synced
     depends_on:
@@ -475,7 +475,7 @@ services:
       # change this token value if you expose this service's ports for
       # connection from other machines
       - ./jwt.hex:/tmp/jwt/jwt.hex:ro
-      - ./entrypointl2.sh:/tmp/entrypointl2.sh
+      - ./entrypoint.sh:/tmp/entrypoint.sh
       - op-geth_data:/tmp/datadir
       - ./rollup.json:/tmp/rollup.json
       - tbc_data:/tbcdata
