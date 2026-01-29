@@ -310,7 +310,7 @@ Steps to use this profile are:
 
 ### Node Synchronization Type
 
-Nodes can perform initial synchronization in two modes, `archive` or `snap`.  `archive` rederives the entire Hemi chain
+Nodes can perform initial synchronization in two modes, `full` or `snap`.  `full` rederives the entire Hemi chain
 from L1 data and stores historical information while `snap` synchronizes Hemi state trie and hVM BTC state data based on
 the network state at the time the `snap` sync is performed. After performing an initial `snap` sync, a node will switch
 to performing full L1 derivation and storing historical information after the point in the chain where the `snap` sync
@@ -320,9 +320,9 @@ occurred.
 > Most users (including dApp developers wishing to run infrastructure to support their dApp) will only need a `snap`
 > sync, which is much faster and smaller. However, if you are running a service which requires access to historical data
 > (such as a blockchain explorer or other data indexer that fetches historical block data and/or performs re-execution
-> of historical transactions), you will need an `archive` sync.
+> of historical transactions), you will need an `full` sync.
 
-To run an `archive` sync, you will need access to an Ethereum Beacon API RPC provider that has all historical blob
+To run an `full` sync, you will need access to an Ethereum Beacon API RPC provider that has all historical blob
 data (the optional Ethereum node in the compose file as part of the `full` or `L1` **will NOT work**, as it will not be
 able to synchronize pruned historical blob data from Ethereum P2P). Hemi uses EIP-4844 blobs for data availability, and
 so performing a full sync from scratch requires access to an Ethereum node which has retained all of these historical
@@ -332,7 +332,7 @@ or ~18.2 days).
 Additionally, a fully-synced Hemi node that is offline for longer than the blob pruning period (~18.2 days) will either
 have to be `snap` synced again, or will have to be connected to an Ethereum node that has historical blobs available.
 
-Possible providers for full blob data to perform an `archive` sync can be found at:
+Possible providers for full blob data to perform an `full` sync can be found at:
 https://docs.arbitrum.io/run-arbitrum-node/l1-ethereum-beacon-chain-rpc-providers
 
 ### Generating Files

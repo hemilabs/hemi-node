@@ -10,7 +10,7 @@
 #
 # Arguments:
 #   <network>   "mainnet" or "testnet"
-#   <sync-mode> "snap" or "archive"
+#   <sync-mode> "snap" or "full"
 #   <profile>   "full", "hemi", "hemi-min", or "l1"
 #
 # Example:
@@ -121,7 +121,7 @@ gen_env() {
 
 	# Sync mode
 	OP_SYNC_MODE="execution-layer" # snap
-	if [ "$SYNC_MODE" = "archive" ]; then
+	if [ "$SYNC_MODE" = "full" ]; then
 		OP_SYNC_MODE="consensus-layer"
 	fi
 
@@ -228,8 +228,8 @@ run() {
 	if [ "$NET" != "mainnet" ] && [ "$NET" != "testnet" ]; then
 		fatal "Network must be 'mainnet' or 'testnet'"
 	fi
-	if [ "$SYNC_MODE" != "snap" ] && [ "$SYNC_MODE" != "archive" ]; then
-		fatal "Sync mode must be 'snap' or 'archive'"
+	if [ "$SYNC_MODE" != "snap" ] && [ "$SYNC_MODE" != "full" ]; then
+		fatal "Sync mode must be 'snap' or 'full'"
 	fi
 	if [ "$PROFILE" != "full" ] && [ "$PROFILE" != "hemi" ] && [ "$PROFILE" != "hemi-min" ] && [ "$PROFILE" != "l1" ]; then
 		fatal "Profile must be one of: 'full', 'hemi', 'hemi-min', or 'l1'"
