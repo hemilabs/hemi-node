@@ -193,6 +193,7 @@ geth \\
 	$OVERRIDES \\
 	--tbc.network=$TBC_NET \\
 	--tbc.leveldbhome=/tbcdata/data \\
+	--tbc.prometheusaddress='0.0.0.0:5555' \\
     --hvm.headerdatadir=/tbcdata/headers \\
     --hvm.genesisheight=$HVM_GENESIS \\
     --hvm.genesisheader=$HVM_GENESIS_HEADER \\

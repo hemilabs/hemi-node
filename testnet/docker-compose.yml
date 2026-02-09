@@ -158,7 +158,7 @@ services:
 
   # Hemi L2 node
   op-geth-l2:
-    image: ghcr.io/hemilabs/op-geth:6ba3f1d@sha256:0b32cd4646ec55fddcb8620894e0404f546fe8c812d683b2e39215f682ae6e8e
+    image: ghcr.io/hemilabs/op-geth:bce106a@sha256:bdfa5b7a5922e4dc9e5c4e494c547d92899140e3c149e5c7ebdc01e92da8990b
     platform: linux/amd64
     # XXX does geth need to be fully synced
     profiles: ["hemi", "hemi-min", "full"]
@@ -188,6 +188,7 @@ services:
     ports:
       - '18546:18546'
       - '28546:28546'
+      - '5555:5555'
     networks:
       - "localnode"
     entrypoint:
@@ -226,7 +227,7 @@ services:
 
   # Hemi op-node
   op-node:
-    image: ghcr.io/hemilabs/op-node:4c1032e@sha256:5424e6b54104c78e5398693aebfe82c381407065370bd73fa0cd0ed81c4121d7
+    image: ghcr.io/hemilabs/op-node:7c70d2d@sha256:7db35d5798615e572d80823a3238a8111b14a90aade876a34b6a2936b17cbd87
     platform: linux/amd64
     profiles: ["hemi", "hemi-min", "full"]
     depends_on:
