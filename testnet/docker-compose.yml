@@ -157,7 +157,7 @@ services:
     working_dir: "/tmp/geth"
   # Hemi L2 node
   op-geth-l2:
-    image: ghcr.io/hemilabs/op-geth:ae3d307@sha256:031dc78fa3203973ba71951cde0eae27900369a5daecef91aa82ce801f8a2273
+    image: ghcr.io/hemilabs/op-geth:127f88f@sha256:f48e62b9ed1e33e070382b2254265bfa77fb283ff1190ed4436270c68f30de56
     platform: linux/amd64
     # XXX does geth need to be fully synced
     profiles: ["hemi", "hemi-min", "full"]
