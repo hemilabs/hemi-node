@@ -443,7 +443,7 @@ services:
 
   op-geth-l2-forked:
     # yamllint disable-line rule:line-length
-    image: 'fix me: new image needed'
+    image: 'ghcr.io/hemilabs/op-geth:bce106a@sha256:bdfa5b7a5922e4dc9e5c4e494c547d92899140e3c149e5c7ebdc01e92da8990b'
     profiles: ["hemitrap"]
     environment:
       OP_GETH_L1_RPC: http://geth-l1-forked:9988"
