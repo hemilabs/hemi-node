@@ -26,6 +26,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Pin all Docker images to SHA256 digests to ensure immutability and improve
   security ([#5](https://github.com/hemilabs/hemi-node/pull/5)).
 
+- Update the bundled Ethereum L1 nodes for the Glamsterdam network upgrade to geth `v1.17.7` and Prysm `v7.2.1`.
+  Prysm now runs as a semi-supernode so it can serve blobs to `op-node`, checkpoint syncs from ChainSafe (the
+  previous `beaconstate.info` endpoints no longer resolve) and no longer passes flags that Prysm v7 removed.
+
 ## Removed
 
 - Remove unused `deploy-config.json` file ([#3](https://github.com/hemilabs/hemi-node/pull/3)).

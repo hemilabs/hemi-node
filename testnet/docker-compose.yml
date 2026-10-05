@@ -129,7 +129,7 @@ services:
 
   # Ethereum L1 node
   geth-l1:
-    image: ethereum/client-go@sha256:343cff592e1a9daf99a89261d3263941ff9c3350b62b3ebc0f7c30d35721d905
+    image: ethereum/client-go:v1.17.7@sha256:6e9669cca5359cdb2c5571198d51e78fc18128b56bff50a1f8422d1c2946fd64
     profiles: ["l1", "full"]
     volumes:
       - geth_data:/tmp/geth
@@ -278,7 +278,7 @@ services:
 
   # Prysm
   prysm:
-    image: prysmaticlabs/prysm-beacon-chain:v5.3.2@sha256:7e2ca890f1b3cbeef69723399767dfbba5c6c660e4e230bc0b4dbe778992e364
+    image: prysmaticlabs/prysm-beacon-chain:v7.2.1@sha256:31a0c766b66f4a65d489a3b2c219918f75684e848eb961c6b1427098513cea1a
     profiles: ["l1", "full"]
     volumes:
       - prysm_data:/data
@@ -293,14 +293,15 @@ services:
       - "--execution-endpoint=${GETHL1ENDPOINT:-http://geth-l1:8551}"
       - "--sepolia"
       - "--jwt-secret=/tmp/jwt/jwt.hex"
-      - "--checkpoint-sync-url=https://sepolia.beaconstate.info"
-      - "--genesis-beacon-api-url=https://sepolia.beaconstate.info"
+      - "--checkpoint-sync-url=https://beaconstate-sepolia.chainsafe.io"
+      - "--genesis-beacon-api-url=https://beaconstate-sepolia.chainsafe.io"
       - "--accept-terms-of-use"
       - "--datadir=/data/prysm"
       - "--rpc-host=0.0.0.0"
-      - "--enable-debug-rpc-endpoints"
-      - "--grpc-gateway-host=0.0.0.0"
-      - "--enable-experimental-backfill"
+      - "--http-host=0.0.0.0"
+      - "--enable-backfill"
+      # serve blobs over the beacon API (needed by op-node since PeerDAS)
+      - "--semi-supernode"
 
   geth-l1-forked:
     image: ghcr.io/foundry-rs/foundry:v1.4.1@sha256:629bebb49d1ba44a52a9fc14229dd58930e3193b4b206ae43ad00089e9ead95b

@@ -487,6 +487,14 @@ GETHL1ENDPOINT=<EthereumExecutionRPCEndpoint>
 PRYSMENDPOINT=<EthereumBeaconRPCEndpoint>
 ```
 
+> [!IMPORTANT]
+> These Ethereum endpoints must run clients that support the Glamsterdam network upgrade before it activates on their
+> network (Sepolia: 2026-10-06 13:53:36 UTC; mainnet: not yet scheduled). That means an execution client that supports
+> Amsterdam (for example geth v1.17.7 or later) and a beacon node that supports Gloas (for example Prysm v7.2.0 or
+> later). The beacon node must also custody enough data to serve blobs from `/eth/v1/beacon/blobs`, which `op-node`
+> needs: run it as a supernode or semi-supernode (Prysm: `--semi-supernode`), so that `custody_group_count` in
+> `/eth/v1/node/identity` is at least 64.
+
 and run (replace `hemi` with `hemi-min` if you want to run the minimal Hemi stack):
 
 ```sh
