@@ -158,7 +158,7 @@ services:
 
   # Hemi L2 node
   op-geth-l2:
-    image: ghcr.io/hemilabs/op-geth:404b681@sha256:694fe6bf5900d57c6d1acc952b7fa7cb808b5d82ba5b8f4c106e8e561f540219
+    image: ghcr.io/hemilabs/op-geth:61c32f1@sha256:355e9d569363b02bf79133e1bfe88ac9600da346b6a463187c434295828a288f
     platform: linux/amd64
     # XXX does geth need to be fully synced
     profiles: ["hemi", "hemi-min", "full"]
